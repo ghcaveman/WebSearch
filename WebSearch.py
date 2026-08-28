@@ -46,7 +46,6 @@ import webbrowser
 from enum import IntEnum
 from types import SimpleNamespace
 
-
 # --------------------------
 # Third-party libraries
 # --------------------------
@@ -497,7 +496,7 @@ class WebSearch(Gramplet):
                         if url.startswith("file://"):
                             self.open_dir(url[7:])
                         else:
-                            webbrowser.open(url)
+                            self.open_url(url)
                         return True
         return False
 
@@ -554,7 +553,9 @@ class WebSearch(Gramplet):
         elif self._ai_provider == AIProviders.MISTRAL.value:
             self.finder = MistralAIClient(self._ai_api_key, self._ai_model)
         else:
-            print(f"❌ Error. Unknown AI provider: {self._ai_provider}", file=sys.stderr)
+            print(
+                f"❌ Error. Unknown AI provider: {self._ai_provider}", file=sys.stderr
+            )
             return
 
         threading.Thread(
@@ -1218,10 +1219,11 @@ class WebSearch(Gramplet):
 
     def has_link_record(self, model, link, obj_handle, database_id):
         """Return True for legacy records or records from the current database."""
-        records = model.query().where("link", link).where("obj_handle", obj_handle).get()
+        records = (
+            model.query().where("link", link).where("obj_handle", obj_handle).get()
+        )
         return any(
-            self.is_current_or_legacy_record(record, database_id)
-            for record in records
+            self.is_current_or_legacy_record(record, database_id) for record in records
         )
 
     @staticmethod
@@ -1729,6 +1731,26 @@ class WebSearch(Gramplet):
 
     def open_url(self, url):
         """Opens the given URL in the default web browser."""
+        if os.environ.get("GRAMPS_HTML"):
+            try:
+                import urllib.request
+                from gramps.plugins.view.htmlview import HTMLView
+
+                req = urllib.request.Request(
+                    url,
+                    headers={"User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64)"},
+                )
+                with urllib.request.urlopen(req, timeout=10) as response:
+                    html_content = response.read().decode("utf-8", errors="ignore")
+
+                HTMLView.set_html_text(html_content)
+                return
+            except Exception as e:
+                print(
+                    f"❌ Failed to fetch and display URL in HTMLView: {e}",
+                    file=sys.stderr,
+                )
+
         webbrowser.open(urllib.parse.quote(url, safe=URL_SAFE_CHARS))
 
     def on_remove_badge(self, unused_button, badge):
@@ -2271,9 +2293,7 @@ class WebSearch(Gramplet):
                 .get()
             )
             if not any(
-                self.is_current_or_legacy_record(
-                    record, self._context.database_id
-                )
+                self.is_current_or_legacy_record(record, self._context.database_id)
                 for record in existing_records
             ):
                 self.hidden_links_model.create(
@@ -2316,9 +2336,7 @@ class WebSearch(Gramplet):
                 .get()
             )
             if not any(
-                self.is_current_or_legacy_record(
-                    record, self._context.database_id
-                )
+                self.is_current_or_legacy_record(record, self._context.database_id)
                 for record in existing_records
             ):
                 self.hidden_links_model.create(
