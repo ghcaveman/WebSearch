@@ -1063,8 +1063,20 @@ class WebSearch(Gramplet):
         if url.startswith("gramps://"):
             self.open_internal_link(url)
         else:
-            encoded_url = urllib.parse.quote(url, safe=URL_SAFE_CHARS)
-            display_url(encoded_url)
+            routed = False
+            if os.environ.get("GRAMPS_HTML"):
+                try:
+                    from gramps.gui.htmlbridge import HtmlBridge
+
+                    routed = HtmlBridge.route_url(url)
+                except Exception as e:
+                    print(
+                        f"❌ Failed to route URL through HtmlBridge: {e}",
+                        file=sys.stderr,
+                    )
+            if not routed:
+                encoded_url = urllib.parse.quote(url, safe=URL_SAFE_CHARS)
+                display_url(encoded_url)
 
         self.add_icon_event(
             SimpleNamespace(
@@ -1730,24 +1742,16 @@ class WebSearch(Gramplet):
         self.open_url(url)
 
     def open_url(self, url):
-        """Opens the given URL in the default web browser."""
+        """Opens the given URL in the HTMLView when enabled, else the browser."""
         if os.environ.get("GRAMPS_HTML"):
             try:
-                import urllib.request
-                from gramps.plugins.view.htmlview import HTMLView
+                from gramps.gui.htmlbridge import HtmlBridge
 
-                req = urllib.request.Request(
-                    url,
-                    headers={"User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64)"},
-                )
-                with urllib.request.urlopen(req, timeout=10) as response:
-                    html_content = response.read().decode("utf-8", errors="ignore")
-
-                HTMLView.set_html_text(html_content)
-                return
+                if HtmlBridge.route_url(url):
+                    return
             except Exception as e:
                 print(
-                    f"❌ Failed to fetch and display URL in HTMLView: {e}",
+                    f"❌ Failed to route URL through HtmlBridge: {e}",
                     file=sys.stderr,
                 )
 

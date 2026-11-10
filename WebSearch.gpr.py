@@ -45,7 +45,7 @@ register(
     expand=True,
     gramplet="WebSearch",
     gramplet_title=_("WebSearch"),
-    gramps_target_version="6.0",
+    gramps_target_version="6.1",
     navtypes=[
         "Person",
         "Place",
@@ -56,6 +56,7 @@ register(
         "Media",
         "Note",
         "Repository",
+        "HTML",
     ],
     include_in_listing=True,
     help_url="Addon:WebSearch",
