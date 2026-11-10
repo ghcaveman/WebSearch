@@ -33,7 +33,6 @@ These classes are primarily used during preprocessing and link building
 for web search and archival queries.
 """
 
-
 from dataclasses import dataclass, field
 from typing import Optional, List
 from typing import Set

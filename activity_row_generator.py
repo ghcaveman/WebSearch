@@ -35,7 +35,6 @@ Key features:
 - Builds details string based on optional fields in the activity record.
 """
 
-
 import os
 
 from gettext import gettext as _

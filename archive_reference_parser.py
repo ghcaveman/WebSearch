@@ -36,7 +36,6 @@ The parsed data can be used for building search URLs to external services such a
 DuckArchive Inspector or FamilySearch image collections.
 """
 
-
 import re
 from typing import Optional, Dict, List
 

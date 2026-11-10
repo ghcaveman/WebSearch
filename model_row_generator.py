@@ -217,7 +217,9 @@ class ModelRowGenerator:
                 website_data.is_custom_file
             )
             file_identifier_icon, file_identifier_icon_visible = (
-                self.get_file_identifier_icon_data(website_data.country_code, source_type)
+                self.get_file_identifier_icon_data(
+                    website_data.country_code, source_type
+                )
             )
             if replaced_keys_count is None:
                 replaced_keys_count = len(pattern_keys_info["replaced_keys"])
@@ -355,10 +357,8 @@ class ModelRowGenerator:
         """
         Build key sets for a URL pattern, expanding repeated UID values only when safe.
         """
-        grouped_attribute_keys = (
-            self.attribute_loader.get_matching_key_values_for_url(
-                attribute_keys, url_pattern
-            )
+        grouped_attribute_keys = self.attribute_loader.get_matching_key_values_for_url(
+            attribute_keys, url_pattern
         )
         pattern_keys = list(dict.fromkeys(re.findall(r"%\((.*?)\)s", url_pattern)))
         uid_pattern_keys = [
@@ -665,10 +665,7 @@ class ModelRowGenerator:
     def get_current_or_legacy_link_record(self, model, final_url, obj_handle):
         """Return the first legacy record or record matching the current database."""
         records = (
-            model.query()
-            .where("link", final_url)
-            .where("obj_handle", obj_handle)
-            .get()
+            model.query().where("link", final_url).where("obj_handle", obj_handle).get()
         )
         for record in records:
             record_database_id = record.get("database_id")

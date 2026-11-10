@@ -63,7 +63,8 @@ class SitePromptRequest(BaseRequest):
             data = json.loads(response)
             if not isinstance(data, dict):
                 print(
-                    "❌ Error. Invalid JSON structure: expected a JSON object.", file=sys.stderr
+                    "❌ Error. Invalid JSON structure: expected a JSON object.",
+                    file=sys.stderr,
                 )
                 return []
 

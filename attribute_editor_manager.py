@@ -171,7 +171,9 @@ class AttributeEditorManager:
         old_attr_name = get_attribute_name(attr.get_type())
         old_attr_value = attr.get_value()
 
-        editor_class = EditSrcAttribute if isinstance(attr, SrcAttribute) else EditAttribute
+        editor_class = (
+            EditSrcAttribute if isinstance(attr, SrcAttribute) else EditAttribute
+        )
 
         editor_class(
             self.dbstate,

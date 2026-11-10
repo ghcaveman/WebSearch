@@ -104,8 +104,7 @@ class Notification(Gtk.Window):
     def apply_css(self):
         """Apply custom CSS styling to the notification window."""
         css_provider = Gtk.CssProvider()
-        css_provider.load_from_data(
-            b"""
+        css_provider.load_from_data(b"""
             #TransparentWindow {
                 background-color: rgba(0, 0, 0, 0.9);
                 border-radius: 10px;
@@ -115,8 +114,7 @@ class Notification(Gtk.Window):
                 color: #ffffff;
                 font-weight: 600;
             }
-        """
-        )
+        """)
         context = Gtk.StyleContext()
         screen = Gdk.Screen.get_default()
         context.add_provider_for_screen(

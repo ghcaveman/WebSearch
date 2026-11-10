@@ -146,7 +146,9 @@ class InfoPanel:
             if not OPENAI_AVAILABLE:
                 markdown_parts.append(_("🔻 **Missing:** `openai`"))
                 markdown_parts.append(
-                    _("ℹ️ This library is required for accessing OpenAI-based features.")
+                    _(
+                        "ℹ️ This library is required for accessing OpenAI-based features."
+                    )
                 )
                 markdown_parts.append(
                     _(
